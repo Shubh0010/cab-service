@@ -15,14 +15,16 @@ function validateSignUp(req, res, next) {
     password: JOI.string().required(),
     confirmPassword: JOI.string().required(),
     phone_number: JOI.number().required(),
-    email: JOI.string()
-      .email()
-      .required(),
-    latitude: JOI.number().required(),
-    longitude: JOI.number().required()
+    "email": JOI.string().trim().email({
+      minDomainAtoms: 2
+    }).max(20).required(),
+    latitude: JOI.number().min(-90).max(90).required(),
+    longitude: JOI.number().min(-180).max(180).required()
   };
-  validate(req, res, schema);
-  next();
+
+  if (validate(req, res, schema)) {
+    next();
+  }
 }
 function validateLogin(req, res, next) {
   const schema = {
@@ -31,16 +33,20 @@ function validateLogin(req, res, next) {
       .email({ minDomainAtoms: 2 })
       .required()
   };
-  validate(req, res, schema);
-  next();
+  if (validate(req, res, schema)) {
+    next();
+  }
 }
 
 function validate(req, res, schema) {
-  try {
-    const check = JOI.validate(schema, req.body);
-  } catch (error) {
-    responses.authenticationError(res, { "error": "please check entered values" }, error.details[0].message);
-  }
+  const check = JOI.validate(req.body, schema, (err, data) => {
+    if (err) {
+      responses.authenticationError(res, { "error": "please check entered values" }, err.details[0].message);
+      return false;
+    }
+    return data;
+  });
+  return check
 }
 
 module.exports = { validateLogin, validateSignUp };

@@ -14,40 +14,43 @@ function validateSignUp(req, res, next) {
     last_name: JOI.string().required(),
     password: JOI.string().required(),
     confirmPassword: JOI.string().required(),
-    email: JOI.string()
-      .email({ minDomainAtoms: 2 })
-      .required(),
+    email: JOI.string().trim().email({
+      minDomainAtoms: 2
+    }).max(20).required(),
     phone_number: JOI.number().required(),
     car_name: JOI.string().required(),
     car_number: JOI.string().required(),
-    latitude: JOI.number().required(),
-    longitude: JOI.number().required()
+    latitude: JOI.number().min(-90).max(90).required(),
+    longitude: JOI.number().min(-180).max(180).required()
   };
-  validate(req, res, schema);
-  next();
+  if (validate(req, res, schema))
+    next();
 }
 function validateLogin(req, res, next) {
   const schema = {
     password: JOI.string().required(),
     phone_number: JOI.number().required()
   };
-  validate(req, res, schema);
-  next();
+  if (validate(req, res, schema))
+    next();
 }
 function validateFare(req, res, next) {
   const schema = {
     ride_fare: JOI.number().required()
   };
-  validate(req, res, schema);
-  next();
+  if (validate(req, res, schema))
+    next();
 }
 
 function validate(req, res, schema) {
-  try {
-    const check = JOI.validate(schema, req.body);
-  } catch (error) {
-    responses.authenticationError(res, { "error": "please check the entered details" }, error.details[0].message);
-  }
+  const check = JOI.validate(req.body, schema, (err, data) => {
+    if (err) {
+      responses.authenticationError(res, { "error": "please check entered values" }, err.details[0].message);
+      return false;
+    }
+    return data;
+  });
+  return check
 }
 
 module.exports = { validateLogin, validateSignUp, validateFare };

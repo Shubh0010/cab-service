@@ -10,26 +10,29 @@ const responses = require(`../../../routes/responses`);
 validateLogin = function (req, res, next) {
   const schema = {
     password: JOI.string().required(),
-    email: JOI.string()
-      .email({ minDomainAtoms: 2 })
-      .required()
+    email: JOI.string().trim().email({
+      minDomainAtoms: 2
+    }).max(20).required()
   };
-  validate(req, res, schema);
-  next();
+  if (validate(req, res, schema))
+    next();
 };
 function validateAssignDriver(req, res, next) {
   const schema = {
     booking_id: JOI.number().required()
   };
-  validate(req, res, schema);
-  next();
+  if (validate(req, res, schema))
+    next();
 }
 function validate(req, res, schema) {
-  try {
-    const check = JOI.validate(schema, req.body);
-  } catch (error) {
-    responses.authenticationError(res, { "error": "Bad Request" }, "Enter Booking Id");
-  }
+  const check = JOI.validate(req.body, schema, (err, data) => {
+    if (err) {
+      responses.authenticationError(res, { "error": "please check entered values" }, err.details[0].message);
+      return false;
+    }
+    return data;
+  });
+  return check
 }
 
 module.exports = { validateLogin, validateAssignDriver };

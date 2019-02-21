@@ -98,17 +98,17 @@ const completeRide = Promise.coroutine(function* (req, res, next) {
     const result = yield driverServices.changeDriverStatus(driverId);
 
     const data = yield driverServices.changeBookingStatus(req, driverId);
-
+    
+    const bId = parseInt(bookingId)    
     const date = moment().format("MMMM Do YYYY, h:mm:ss a");
     const logs = [
       `Driver with id "${driverId}" completes the booking at ${date}`
     ];
     const logData = logs.toString();
-    const booking__id = parseInt(req.body.booking_id)
-    dbo
+    dbo                                                                                       // log array of collection is updated to store assign information 
       .collection("booking_logs")
       .update(
-        { booking_id: booking__id },
+        { booking_id: bId },
         { $push: { logs: logData } }
       );
 

@@ -84,7 +84,7 @@ exports.assignDriver = Promise.coroutine(function* (req, res, next) {
     dbo                                                                                       // log array of collection is updated to store assign information 
       .collection("booking_logs")
       .update(
-        { booking_id: booking_id },
+        { booking_id: bookingId },
         { $push: { logs: logData } }
       );
 
