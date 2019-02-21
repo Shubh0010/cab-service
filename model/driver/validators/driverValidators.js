@@ -10,13 +10,13 @@ const responses = require(`../../../routes/responses`);
 function validateSignUp(req, res, next) {
   const schema = {
     first_name: JOI.string().required(),
-    middle_name: JOI.string().required(),
+    middle_name: JOI.string(),
     last_name: JOI.string().required(),
     password: JOI.string().required(),
     confirmPassword: JOI.string().required(),
     email: JOI.string().trim().email({
       minDomainAtoms: 2
-    }).max(20).required(),
+    }).max(30).required(),
     phone_number: JOI.number().required(),
     car_name: JOI.string().required(),
     car_number: JOI.string().required(),

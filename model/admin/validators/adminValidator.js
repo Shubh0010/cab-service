@@ -12,7 +12,7 @@ validateLogin = function (req, res, next) {
     password: JOI.string().required(),
     email: JOI.string().trim().email({
       minDomainAtoms: 2
-    }).max(20).required()
+    }).max(30).required()
   };
   if (validate(req, res, schema))
     next();
