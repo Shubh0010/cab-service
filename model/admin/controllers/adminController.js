@@ -1,112 +1,127 @@
-const responses = require(`../../../routes/responses`)
-const adminServices = require(`../services/adminServices`)
-const alreagyLogin = require(`../../../utilities/alreadyLogin`)
-const generateToken = require('../../../utilities/generateToken')
-const jwt = require(`jsonwebtoken`)
-const config = require('config')
-const moment = require(`moment`)
-exports.authenticateLogin = async (req, res) => {
-  //find user
-  const isThere = await adminServices.findAdmin(req)
-  if (!isThere) return responses.authenticationError(res, {}, "Wrong Credentials!! Pls try again")
+/*
+ * Author : Shubham Negi
+ * =====================
+ * all the working of admin is in this file with all responses 
+ */
 
-  //already logged in ??  
-  const isLogin = await alreagyLogin.isLogin(req, "admin")
+const responses = require(`../../../routes/responses`);
+const adminServices = require(`../services/adminServices`);
+const alreagyLogin = require(`../../../utilities/alreadyLogin`);
+const generateToken = require("../../../utilities/generateToken");
+const jwt = require(`jsonwebtoken`);
+const config = require("config");
+const moment = require(`moment`);
 
-  if (isLogin) return responses.actionCompleteResponse(res, { token: isLogin }, "Already Login !!")
+exports.authenticateLogin = Promise.coroutine(function* (req, res) {
 
-  // add token
-  const token = generateToken.token(req, "jwtPrivateKeyAdmin")
-  const result = await adminServices.addToken(req.body, token)
+  const isThere = yield adminServices.findAdmin(req);
+  if (!isThere)
+    return responses.authenticationError(
+      res,
+      { "Error": "Bad Request" },
+      "Wrong Credentials!! Pls try again"
+    );
 
-  console.log(result)
-  responses.actionCompleteResponse(res, { "token": token }, "SUCCESSFULLY LOGGED IN")
-}
+  const isLogin = yield alreagyLogin.isLogin(req, "admin");
 
-exports.authenticateAdmin = async (req, res, next) => {
+  if (isLogin)
+    return responses.actionCompleteResponse(
+      res,
+      { token: isLogin },
+      "Already Login !!"
+    );
+
+  const token = generateToken.token(req, "jwtPrivateKeyAdmin");
+  const result = yield adminServices.addToken(req.body, token);
+
+  responses.actionCompleteResponse(
+    res,
+    { token: token },
+    "SUCCESSFULLY LOGGED IN"
+  );
+});
+
+exports.authenticateAdmin = Promise.coroutine(function* (req, res, next) {
   try {
-    const token = req.header(`access_token`)
-    if (!token) return responses.authenticationError(res, {}, "Access Denied")                            // If the token is not there, we don`t let manipulation in database
+    const token = req.header(`access_token`);
+    if (!token) return responses.authenticationError(res, { "data": "please provide access token" }, "Access Denied");
 
     try {
-      const decoded = jwt.verify(token, config.get(`jwtPrivateKeyAdmin`));                  // Only verified users will be able to manipulate data
+      const decoded = jwt.verify(token, config.get(`jwtPrivateKeyAdmin`));
       req.tokenEmail = decoded.email;
       next();
+    } catch (ex) {
+      responses.authenticationError(res, { "error": "Bad Request" }, "Invalid Token");
     }
-    catch (ex) {
-      responses.authenticationError(res, {}, "Invalid Token");
-    }
+  } catch (error) {
+    responses.authenticationError(res, { "error": "Bad Request" }, "Authentication Unsucessful");
   }
-  catch (error) {
-    responses.authenticationError(res, {}, "Authentication Unsucessfull")
-  }
-}
+});
 
-exports.assignDriver = async (req, res, next) => {
+exports.assignDriver = Promise.coroutine(function* (req, res, next) {
   try {
-    //valid booking
-    const invalidBooking = await adminServices.invalidBooking(req);
-    if (invalidBooking) return responses.actionCompleteResponse(res, {}, "Invalid Booking")
+    const invalidBooking = yield adminServices.invalidBooking(req);
+    if (invalidBooking)
+      return responses.actionCompleteResponse(res, { "error": "Bad Request" }, "Invalid Booking");
 
-    //if booking already assigned  
-    const isComplete = await adminServices.isBookingComplete(req);
-    if (isComplete) return responses.actionCompleteResponse(res, {}, "Already Assigned")
+    const isComplete = yield adminServices.isBookingComplete(req);
+    if (isComplete)
+      return responses.actionCompleteResponse(res, { "response": isComplete }, "Already Assigned");
 
-    //find driver
-    const driverId = await adminServices.findDriver()
-    if (driverId == -1) return responses.actionCompleteResponse(res, {}, "All driver are busy")
+    const driverId = yield adminServices.findDriver();
+    if (driverId == -1)
+      return responses.actionCompleteResponse(res, { "response": "couldn't get any driver" }, "All driver are busy");
 
-    // change status of driver
-    const result = await adminServices.changeDriverStatus(driverId)
-    //change status of booking
-    const data = await adminServices.changeBookingStatus(req, driverId)
+    const result = yield adminServices.changeDriverStatus(driverId);                          // if any driver is free assign driver to it by changing status of driver from 0 (available) to 1 (busy) 
+    const data = yield adminServices.changeBookingStatus(req, driverId);                      // and booking status from 0 (pending) to 1(ongoing)
 
-    responses.actionCompleteResponse(res, {}, "ASSIGNED SUCCESSFULLY")
+    const date = moment().format("MMMM Do YYYY, h:mm:ss a");
+    const bookingId = parseInt(req.body.booking_id)
+    const logs = [
+      `Admin with email "${req.tokenEmail}" assigned driver with driver id "${driverId}" at "${date}"`
+    ];
+    const logData = logs.toString();
+    dbo                                                                                       // log array of collection is updated to store assign information 
+      .collection("booking_logs")
+      .update(
+        { booking_id: booking_id },
+        { $push: { logs: logData } }
+      );
 
-
-    //mongo
-    const date = moment().format('MMMM Do YYYY, h:mm:ss a');
-    const logs = ["Admin with id", adminId[0].admin_id, "assigned driver with id", driverid[0].driver_id, "on", date];
-    const logData = logs.join(' ')
-    dbo.collection("adminlogs").insert({ admin_id: adminId[0].admin_id, driver_id: driverid[0].driver_id, logs: data })
-  }
-  catch (error) {
+    responses.actionCompleteResponse(res, { "driverId": driverId }, "ASSIGNED SUCCESSFULLY");
+  } catch (error) {
     console.log(error);
-    responses.authenticationError(res, {}, "Couldn`t assign your booking.... please try again Later!!!!!!!")
+    responses.authenticationError(
+      res,
+      {},
+      "Couldn`t assign your booking.... please try again Later!!!!!!!"
+    );
   }
-}
+});
 
-exports.getAllBookings = async (req, res, next) => {
+exports.getAllBookings = Promise.coroutine(function* (req, res, next) {
   try {
-    const result = await adminServices.getAllBookings(req);
-    responses.actionCompleteResponse(res, result, "All Bookings")
-
+    const result = yield adminServices.getAllBookings(req);
+    responses.actionCompleteResponse(res, result, "All Bookings");
+  } catch (error) {
+    responses.authenticationError(res, error, "Couldn`t get bookings");
   }
-  catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings")
-  }
-}
+});
 
-exports.getAllAssignedBookings = async (req, res, next) => {
+exports.getAllAssignedBookings = Promise.coroutine(function* (req, res, next) {
   try {
-    const result = await adminServices.getAllAssignedBookings(req);
-    responses.actionCompleteResponse(res, result, "All Assigned Bookings")
-
+    const result = yield adminServices.getAllAssignedBookings(req);
+    responses.actionCompleteResponse(res, result, "All Assigned Bookings");
+  } catch (error) {
+    responses.authenticationError(res, error, "Couldn`t get bookings");
   }
-  catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings")
+});
 
-  }
-}
-
-exports.getAllUnAssignedBookings = async (req, res, next) => {
+exports.getAllUnAssignedBookings = Promise.coroutine(function* (req, res, next) {
   try {
-    const result = await adminServices.getAllUnAssignedBookings(req);
-    responses.actionCompleteResponse(res, result, "All Unassigned Bookings")
-
+    const result = yield adminServices.getAllUnAssignedBookings(req);
+    responses.actionCompleteResponse(res, result, "All Unassigned Bookings");
+  } catch (error) {
+    responses.authenticationError(res, error, "Couldn`t get bookings");
   }
-  catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings")
-
-  }
-}
+});

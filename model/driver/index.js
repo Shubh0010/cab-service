@@ -1,3 +1,9 @@
+/*
+ * Author : Shubham Negi
+ * =====================
+ * entry file of driver model
+ */
+
 const driverValidators = require(`./validators/driverValidators`)
 const driverControllers = require(`./controllers/driverConrollers`)
 

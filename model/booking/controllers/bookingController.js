@@ -1,48 +1,61 @@
-const bookingServices = require('../services/bookingService')
-const responses = require("../../../routes/responses")
-exports.createBooking = async (req, res) => {
-  //find id of customer
+/*
+ * Author : Shubham Negi
+ * =====================
+ * all the working of booking is in this file with all responses
+ */
+
+const bookingServices = require("../services/bookingService");
+const responses = require("../../../routes/responses");
+const moment = require("moment");
+
+exports.createBooking = Promise.coroutine(function* (req, res) {
   try {
-    const id = await bookingServices.findId(req)
+    const id = yield bookingServices.findId(req);                                               // customer_id of the customer who try to creates booking
 
-    //already riding ??
-    const isRiding = await bookingServices.checkBooking(req, id)
+    const isRiding = yield bookingServices.checkBooking(req, id);                               // we won`t let him/he book if its already booked another ride
 
-    if (isRiding) return responses.actionCompleteResponse(res, {}, "Please complete this ride to enjoy another ride !!")
+    if (isRiding)
+      return responses.actionCompleteResponse(
+        res,
+        { "info": `one ride to customer with customer id "${id}" is already assigned` },
+        "Please complete this ride to enjoy another ride !!"
+      );
 
-    const booked = await bookingServices.createBooking(req, id)
+    const booked = yield bookingServices.createBooking(req, id);
 
-    if (booked) return responses.actionCompleteResponse(res, {}, "BOOKING CREATED")
-    responses.authenticationError(res, {}, "Couldn't assign booking!! Pease try again later")
+    if (booked) {
+      const date = moment().format("MMMM Do YYYY, h:mm:ss a");
+      const log = [
+        `Booking created by customer with customer id "${id}" and customer email "${req.tokenEmail}" at "${date}"`
+      ];
+      const logData = log.toString();
+      yield dbo.collection("booking_logs").insertOne({
+        booking_id: booked.insertId,
+        logs: [logData]
+      });
+    }
+    return responses.actionCompleteResponse(res, { "result": booked }, "BOOKING CREATED");
 
+  } catch (error) {
+    console.log(error);
+    responses.authenticationError(res, { "error": "technical issue" }, "Couldn`t assign booking !!");
   }
-  catch (error) {
-    console.log(error)
-    responses.authenticationError(res, {}, "Technical issue with Database !!")
-  }
-}
+});
 
-exports.getBooking = async (req, res, next) => {
+exports.getBooking = Promise.coroutine(function* (req, res) {
   try {
-    
-    const result = await bookingServices.getBooking(req);
-    responses.actionCompleteResponse(res, result, "Current Booking")
-
+    const result = yield bookingServices.getBooking(req);
+    responses.actionCompleteResponse(res, result, "Current Booking");
+  } catch (error) {
+    responses.authenticationError(res, error, "Couldn`t get bookings");
   }
-  catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings")
-  }
+});
 
-}
-
-exports.getAllBookings = async (req, res, next) => {
+exports.getAllBookings = Promise.coroutine(function* (req, res) {
   try {
-    const result = await bookingServices.getAllBookings(req);
-    responses.actionCompleteResponse(res, result, "All Bookings")
-
+    const result = yield bookingServices.getAllBookings(req);
+    responses.actionCompleteResponse(res, result, "All Bookings");
+  } catch (error) {
+    responses.authenticationError(res, error, "Couldn`t get bookings");
   }
-  catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings")
-  }
-
-}
+});

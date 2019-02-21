@@ -32,11 +32,11 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "successfully log in."
           },
           "400": {
-            "description": "Error in registering"
+            "description": "Error in Log in"
           }
         }
       }
@@ -56,11 +56,11 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "successfully log in."
+          "200": {
+            "description": "ALl Bookings Showed"
           },
           "400": {
-            "description": "Error in registering"
+            "description": "Error in showing all bookings"
           }
         }
       }
@@ -80,11 +80,11 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "successfully log in."
+          "200": {
+            "description": "assigned bookings"
           },
           "400": {
-            "description": "Error in registering"
+            "description": "Error in showing assigned bookings"
           }
         }
       }
@@ -104,11 +104,11 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "successfully log in."
+          "200": {
+            "description": "unassigned bookings"
           },
           "400": {
-            "description": "Error in registering"
+            "description": "Error in showing unassigned bookings"
           }
         }
       }
@@ -134,11 +134,11 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "successfully log in."
+          "200": {
+            "description": "Driver assigned"
           },
           "400": {
-            "description": "Error in registering"
+            "description": "couldn`t assign driver"
           }
         }
       }
@@ -182,11 +182,11 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "successfully signed up."
+          "200": {
+            "description": "booking created"
           },
           "400": {
-            "description": "Error in registering"
+            "description": "couldn`t create booking"
           }
         }
       }
@@ -206,11 +206,11 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "successfully signed up."
+          "200": {
+            "description": "current booking"
           },
           "400": {
-            "description": "Error in registering"
+            "description": "couldn`t load current booking"
           }
         }
       }
@@ -230,11 +230,11 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "successfully signed up."
+          "200": {
+            "description": "ALL BOOKINGS"
           },
           "400": {
-            "description": "Error in registering"
+            "description": "couldn`t load all bookings"
           }
         }
       }
@@ -314,7 +314,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "successfully signed up."
           },
           "400": {
@@ -344,11 +344,11 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "successfully log in."
           },
           "400": {
-            "description": "Error in registering"
+            "description": "Error in login"
           }
         }
       }
@@ -368,11 +368,11 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "successfully log in."
+          "200": {
+            "description": "CURRENT BOOKING"
           },
           "400": {
-            "description": "Error in registering"
+            "description": "couldn`t load currrent booking"
           }
         }
       }
@@ -392,11 +392,11 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "successfully log in."
+          "200": {
+            "description": "ALL BOOKINGS"
           },
           "400": {
-            "description": "Error in registering"
+            "description": "couldn't load all bookings"
           }
         }
       }
@@ -422,11 +422,11 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "successfully log in."
+          "200": {
+            "description": "RIDE COMPLETED"
           },
           "400": {
-            "description": "Error in registering"
+            "description": "couldn`t complete the ride"
           }
         }
       }
@@ -494,7 +494,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "successfully signed up."
           },
           "400": {
@@ -524,11 +524,11 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "successfully signed up."
+          "200": {
+            "description": "successfully logged in"
           },
           "400": {
-            "description": "Error in registering"
+            "description": "Error in log in"
           }
         }
       }

@@ -1,8 +1,14 @@
-const bookingValidators= require("./validators/bookingValidators")
+/*
+ * Author : Shubham Negi
+ * =====================
+ * entry file of booking model
+ */
+
+const bookingValidators = require("./validators/bookingValidators")
 const authenticateBooking = require("./controllers/authenticateBooking")
 const bookingController = require("./controllers/bookingController")
 
 app.get(`/booking/getBooking`, authenticateBooking.authenticate, bookingController.getBooking)
-app.get(`/booking/getAllBookings`,authenticateBooking.authenticate, bookingController.getAllBookings)
+app.get(`/booking/getAllBookings`, authenticateBooking.authenticate, bookingController.getAllBookings)
 
-app.post(`/booking/createBooking`, bookingValidators.validateBooking, authenticateBooking.authenticate , bookingController.createBooking)
+app.post(`/booking/createBooking`, bookingValidators.validateBooking, authenticateBooking.authenticate, bookingController.createBooking)

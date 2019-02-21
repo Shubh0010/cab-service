@@ -1,5 +1,5 @@
 /*
-  Database connection
+  Database connection mySQL
 */
 
 const mysql = require('mysql');

@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "bluebird": "^3.5.3",
     "config": "^3.0.1",
     "express": "^4.16.4",
     "joi": "^14.3.1",

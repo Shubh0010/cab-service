@@ -1,13 +1,16 @@
-const constants = require('../properties/constant')
+/*
+    contains all the responses
+ */
+const constants = require("../properties/constant");
 
 exports.actionCompleteResponse = async (res, getdata, msg) => {
   const response = {
     message: msg || constants.responseMessages.ACTION_COMPLETE,
     status: constants.responseFlags.ACTION_COMPLETE,
-    data: getdata || {} 
+    data: getdata || {}
   };
   res.send(response);
-}
+};
 
 exports.authenticationError = async (res, data, msg) => {
   const response = {
@@ -16,4 +19,4 @@ exports.authenticationError = async (res, data, msg) => {
     data: data || {}
   };
   res.send(response);
-}
+};

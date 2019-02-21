@@ -1,123 +1,150 @@
-const moment = require('moment')
-const responses = require(`../../../routes/responses`)
-const driverServices = require(`../services/driverServices`)
-const generateToken = require(`../../../utilities/generateToken`)
-const alreagyLogin = require(`../../../utilities/alreadyLogin`)
-const jwt = require(`jsonwebtoken`)
-const config = require(`config`)
-async function addDriver(req, res) {
+/*
+ * Author : Shubham Negi
+ * =====================
+ * all the working of driver is in this file with all responses 
+ */
+
+const moment = require("moment");
+const responses = require(`../../../routes/responses`);
+const driverServices = require(`../services/driverServices`);
+const generateToken = require(`../../../utilities/generateToken`);
+const alreagyLogin = require(`../../../utilities/alreadyLogin`);
+const jwt = require(`jsonwebtoken`);
+const config = require(`config`);
+
+const addDriver = Promise.coroutine(function* (req, res) {
   if (req.body.password != req.body.confirmPassword)
-    return responses.authenticationError(res, {}, "password and confirm password doesn`t match") // password nort same
+    return responses.authenticationError(
+      res,
+      { "error": "bad request" },
+      "password and confirm password doesn`t match"
+    );
 
   try {
-    const check = await driverServices.checkEmail(req)
-    if (check) {
-      responses.authenticationError(res, {}, "Already Registered")
-      return
-    }
+    const check = yield driverServices.checkEmail(req);
+    if (check) return responses.authenticationError(res, { "info": "email already exist" }, "Already Registered");
+
     else {
-      const token = generateToken.token(req, "jwtPrivateKeyDriver")
-      const add = await driverServices.addDriver(req.body, token)
-      responses.actionCompleteResponse(res, { "token": token }, "WELCOME ABROAD")
+      const token = generateToken.token(req, "jwtPrivateKeyDriver");
+      const add = yield driverServices.addDriver(req.body, token);
+      responses.actionCompleteResponse(res, { token: token }, "WELCOME ABROAD");
     }
+  } catch (error) {
+    console.log(error);
+    responses.authenticationError(res, error, "Technical issue with database");
   }
-  catch (error) {
-    console.log(error)
-    responses.authenticationError(res, error, "Technical issue with database")
-  }
-}
+});
 
-async function authenticateDriver(req, res) {
-  //find user
+const authenticateDriver = Promise.coroutine(function* (req, res) {
 
-  const isThere = await driverServices.findDriver(req)
-  if (!isThere) return responses.authenticationError(res, {}, "Wrong Credentials!! Pls try again")
+  const isThere = yield driverServices.findDriver(req);
+  if (!isThere)
+    return responses.authenticationError(
+      res,
+      { "error": "bad request" },
+      "Wrong Credentials!! Pls try again"
+    );
 
-  //already logged in ??  
-  const isLogin = await alreagyLogin.isLogin(req, "driver")
-  if (isLogin) return responses.actionCompleteResponse(res, { token: isLogin }, "Already Login !!")
+  const isLogin = yield alreagyLogin.isLogin(req, "driver");
+  if (isLogin)
+    return responses.actionCompleteResponse(
+      res,
+      { token: isLogin },
+      "Already Login !!"
+    );
 
-  // add token
-  const token = generateToken.token(req, "jwtPrivateKeyDriver")
-  const result = await driverServices.addToken(req.body, token)
-  responses.actionCompleteResponse(res, { "token": token }, "SUCCESSFULLY LOGGED IN")
+  const token = generateToken.token(req, "jwtPrivateKeyDriver");
+  const result = yield driverServices.addToken(req.body, token);
+  responses.actionCompleteResponse(
+    res,
+    { token: token },
+    "SUCCESSFULLY LOGGED IN"
+  );
+});
 
-}
-async function authenticateToken(req, res, next) {
+const authenticateToken = Promise.coroutine(function* (req, res, next) {
   try {
-
-    const token = req.header(`access_token`)
-    console.log(token)
-    if (!token) return responses.authenticationError(res, {}, "Access Denied")                            // If the token is not there, we don`t let manipulation in database
+    const token = req.header(`access_token`);
+    if (!token) return responses.authenticationError(res, {}, "Access Denied"); // If the token is not there, we don`t let manipulation in database
 
     try {
-
-      const decoded = jwt.verify(token, config.get(`jwtPrivateKeyDriver`));                  // Only verified users will be able to manipulate data
+      const decoded = jwt.verify(token, config.get(`jwtPrivateKeyDriver`)); // Only verified users will be able to manipulate data
       req.tokenEmail = decoded.email;
       next();
+    } catch (ex) {
+      responses.authenticationError(res, { "error": "bad request" }, "Invalid Token");
     }
-    catch (ex) {
-      console.log(ex)
-      responses.authenticationError(res, {}, "Invalid Token");
-    }
+  } catch (error) {
+    responses.authenticationError(res, { "error": "bad request" }, "Authentication Unsucessful");
   }
-  catch (error) {
-    responses.authenticationError(res, {}, "Authentication Unsucessfull")
-  }
-}
-async function completeRide(req, res, next) {
+});
+
+const completeRide = Promise.coroutine(function* (req, res, next) {
   try {
-    const driverId = await driverServices.findId(req)
+    const driverId = yield driverServices.findId(req);
 
-    //no bookings ?
-    const noBooking = await driverServices.noBooking(driverId)
-    if (noBooking) return responses.actionCompleteResponse(res, {}, "No Ride To complete")
+    const noBooking = yield driverServices.noBooking(driverId);
+    if (noBooking)
+      return responses.actionCompleteResponse(res, { "info": "...." }, "No Ride To complete");
 
-    const result = await driverServices.changeDriverStatus(driverId)
+    const bookingId = yield driverServices.findBookingId(driverId);
+    if (!bookingId)
+      responses.actionCompleteResponse(
+        res,
+        { "info": "ALREADY COMPLETED" },
+        "This ride is already completed"
+      );
 
-    //change status of booking
-    const data = await driverServices.changeBookingStatus(req, driverId)
+    const result = yield driverServices.changeDriverStatus(driverId);
 
-    responses.actionCompleteResponse(res, {}, "COMPLETED SUCCESSFULLY")
+    const data = yield driverServices.changeBookingStatus(req, driverId);
 
+    const date = moment().format("MMMM Do YYYY, h:mm:ss a");
+    const logs = [
+      `Driver with id "${driverId}" completes the booking at ${date}`
+    ];
+    const logData = logs.toString();
+    const booking__id = parseInt(req.body.booking_id)
+    dbo
+      .collection("booking_logs")
+      .update(
+        { booking_id: booking__id },
+        { $push: { logs: logData } }
+      );
 
-    //mongo
-    const date = moment().format('MMMM Do YYYY, h:mm:ss a');
-    const log = ["driver with id", driverId, "completes booking at", date];
-    const logData = log.toString()
-    dbo.collection("driverlogs").insert({ logs: logData })
-
-
-
+    responses.actionCompleteResponse(res, { "success": `driver with driver id "${driverId}" completed booking "${bookingId}" sucessfully` }, "COMPLETED SUCCESSFULLY");
+  } catch (error) {
+    responses.authenticationError(
+      res,
+      { "error": "technical issue" },
+      " couldn`t process the complete request"
+    );
   }
-  catch (error) {
-    console.log(error)
-    responses.authenticationError(res, {}, " couldn`t process the complete request")
-  }
-}
+});
 
-async function getBooking(req, res, next) {
+const getBooking = Promise.coroutine(function* (req, res, next) {
   try {
-    const result = await driverServices.getBooking(req);
-    responses.actionCompleteResponse(res, result, "Current Booking")
-
+    const result = yield driverServices.getBooking(req);
+    responses.actionCompleteResponse(res, result, "Current Booking");
+  } catch (error) {
+    responses.authenticationError(res, error, "Couldn`t get bookings");
   }
-  catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings")
-  }
+});
 
-}
-
-async function getAllBookings(req, res, next) {
+const getAllBookings = Promise.coroutine(function* (req, res, next) {
   try {
-    const result = await driverServices.getAllBookings(req);
-    responses.actionCompleteResponse(res, result, "All Bookings")
-
+    const result = yield driverServices.getAllBookings(req);
+    responses.actionCompleteResponse(res, result, "All Bookings");
+  } catch (error) {
+    responses.authenticationError(res, error, "Couldn`t get bookings");
   }
-  catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings")
-  }
+});
 
-}
-
-module.exports = { addDriver, authenticateDriver, authenticateToken, completeRide, getAllBookings, getBooking }
+module.exports = {
+  addDriver,
+  authenticateDriver,
+  authenticateToken,
+  completeRide,
+  getAllBookings,
+  getBooking
+};
