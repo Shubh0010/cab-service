@@ -9,6 +9,12 @@ const userServices = require(`../services/userServices`);
 const generateToken = require(`../../../utilities/generateToken`);
 const alreagyLogin = require(`../../../utilities/alreadyLogin`);
 
+/** 
+* @function <b> addCustomer </b> <br> 
+* adds user to database 
+* @param {object}  req(name, password, email), response object
+* @return {void}
+*/
 const addCustomer = Promise.coroutine(function* (req, res) {
   if (req.body.password != req.body.confirmPassword)
     return responses.authenticationError(
@@ -31,6 +37,12 @@ const addCustomer = Promise.coroutine(function* (req, res) {
   }
 });
 
+/** 
+* @function <b> authenticateCustomer </b> <br> 
+* authenticates customer 
+* @param {object} req, res 
+* @return {void} 
+*/
 const authenticateCustomer = Promise.coroutine(function* (req, res) {
   const isThere = yield userServices.findCustomer(req);
   if (!isThere)

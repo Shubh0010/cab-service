@@ -21,6 +21,12 @@ exports.createBooking = Promise.coroutine(function* (req, id) {
   return result;
 });
 
+/** 
+* @function <b> checkBooking </b> <br> 
+* checks booking with status 0(pending) or 1(ongoing) 
+* @param {object(req), id}   
+* @return {boolean}
+*/
 exports.checkBooking = Promise.coroutine(function* (req, id) {
   const query = `select count(*) as count from booking where customer_id = ? and status in (?,?) `;
   const params = [id, 0, 1];
@@ -30,6 +36,12 @@ exports.checkBooking = Promise.coroutine(function* (req, id) {
   return false;
 });
 
+/** 
+* @function <b> getBooking </b> <br> 
+* shows current booking 
+* @param {object(req)}   
+* @return customer id
+*/
 exports.findId = Promise.coroutine(function* (req) {
   const query = "select customer_id from customer where email = ?";
   const values = [req.tokenEmail];

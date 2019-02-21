@@ -18,6 +18,12 @@ function validateBooking(req, res, next) {
     next();
 }
 
+/** 
+* @function <b> validate </b> <br> 
+* validates booking model 
+* @param {object(req), object(res), object(schema)}   
+* @return boolean
+*/
 function validate(req, res, schema) {
   const check = JOI.validate(req.body, schema, (err, data) => {
     if (err) {

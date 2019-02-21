@@ -12,6 +12,12 @@ const alreagyLogin = require(`../../../utilities/alreadyLogin`);
 const jwt = require(`jsonwebtoken`);
 const config = require(`config`);
 
+/** 
+* @function <b> addDriver </b> <br> 
+* adds driver to database 
+* @param {object(req), object(res)}   
+* @return void
+*/
 const addDriver = Promise.coroutine(function* (req, res) {
   if (req.body.password != req.body.confirmPassword)
     return responses.authenticationError(
@@ -35,6 +41,12 @@ const addDriver = Promise.coroutine(function* (req, res) {
   }
 });
 
+/** 
+* @function <b> authenticateDriver </b> <br> 
+* authenticates driver 
+* @param {object(req), object(res)}   
+* @return void
+*/
 const authenticateDriver = Promise.coroutine(function* (req, res) {
 
   const isThere = yield driverServices.findDriver(req);
@@ -62,6 +74,12 @@ const authenticateDriver = Promise.coroutine(function* (req, res) {
   );
 });
 
+/** 
+* @function <b> authenticateToken </b> <br> 
+* authenticates driver token
+* @param {object(req), object(res)}   
+* @return void
+*/
 const authenticateToken = Promise.coroutine(function* (req, res, next) {
   try {
     const token = req.header(`access_token`);
@@ -79,6 +97,12 @@ const authenticateToken = Promise.coroutine(function* (req, res, next) {
   }
 });
 
+/** 
+* @function <b> completeRide </b> <br> 
+* completes a ride 
+* @param {object(req), object(res)}   
+* @return void
+*/
 const completeRide = Promise.coroutine(function* (req, res, next) {
   try {
     const driverId = yield driverServices.findId(req);
@@ -122,6 +146,12 @@ const completeRide = Promise.coroutine(function* (req, res, next) {
   }
 });
 
+/** 
+* @function <b> getBooking </b> <br> 
+* shows current booking 
+* @param {object(req), object(res)}   
+* @return void
+*/
 const getBooking = Promise.coroutine(function* (req, res, next) {
   try {
     const result = yield driverServices.getBooking(req);
@@ -131,6 +161,12 @@ const getBooking = Promise.coroutine(function* (req, res, next) {
   }
 });
 
+/** 
+* @function <b> getAllBooking </b> <br> 
+* shows all booking 
+* @param {object(req), object(res)}   
+* @return void
+*/
 const getAllBookings = Promise.coroutine(function* (req, res, next) {
   try {
     const result = yield driverServices.getAllBookings(req);

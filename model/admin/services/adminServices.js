@@ -9,6 +9,12 @@ const responses = require(`../../../routes/responses`);
 const hash = require("../../../utilities/hashPassword");
 const bcrypt = require("bcryptjs");
 
+/** 
+* @function <b> addToken </b> <br> 
+* adds token on login 
+* @param {object (data),String(access_token)}   
+* @return {object(data with token)} 
+*/
 exports.addToken = Promise.coroutine(function* (data, access_token) {
   const query = "UPDATE admin SET access_token = ? where email=?";
   const params = [access_token, data.email];
@@ -16,6 +22,12 @@ exports.addToken = Promise.coroutine(function* (data, access_token) {
   return result;
 });
 
+/** 
+* @function <b> addToken </b> <br> 
+* adds token on login 
+* @param {object (req {email})}   
+* @return {boolean(AdminPresent)} 
+*/
 exports.findAdmin = Promise.coroutine(function* (req) {
   try {
     const query = `select password from admin where email = ?`;
@@ -28,6 +40,12 @@ exports.findAdmin = Promise.coroutine(function* (req) {
   }
 });
 
+/** 
+* @function <b> addToken </b> <br> 
+* adds token on login 
+* @param NA   
+* @return driver id 
+*/
 exports.findDriver = Promise.coroutine(function* () {                                                  // returns the first driver with availability_status = 0 (available)
   const query = `select driver_id from driver where availability_status = ? LIMIT ?`;
   const values = [0, 1];
@@ -36,6 +54,12 @@ exports.findDriver = Promise.coroutine(function* () {                           
   return result[0].driver_id;
 });
 
+/** 
+* @function <b> changeDriverStatus </b> <br> 
+* changes driver status to 1 
+* @param {object (data)}   
+* @return {object (result with updated availability status)}
+*/
 exports.changeDriverStatus = Promise.coroutine(function* (driver_id) {
   const query = "UPDATE driver SET availability_status = ? where driver_id=?";
   const params = [1, driver_id];                                                                      // availability_status 1 = BUSY
@@ -43,6 +67,12 @@ exports.changeDriverStatus = Promise.coroutine(function* (driver_id) {
   return result;
 });
 
+/** 
+* @function <b> changeBookingStatus </b> <br> 
+* changes Booking status to 1 
+* @param {object (data)}   
+* @return {object (result with updated booking status)}
+*/
 exports.changeBookingStatus = Promise.coroutine(function* (req, driver_id) {
   const query =
     "UPDATE booking SET status = ?, driver_id = ? where booking_id=?";
@@ -51,6 +81,12 @@ exports.changeBookingStatus = Promise.coroutine(function* (req, driver_id) {
   return result;
 });
 
+/** 
+* @function <b> invalidBooking </b> <br> 
+* checks if booking_id is valid 
+* @param {object(req)}   
+* @return {boolean}
+*/
 exports.invalidBooking = Promise.coroutine(function* (req) {
   const query = `select count(*) as count from booking where booking_id = ?`;
   const params = [req.body.booking_id];
@@ -59,6 +95,12 @@ exports.invalidBooking = Promise.coroutine(function* (req) {
   return false;
 });
 
+/** 
+* @function <b> isBookingComplete </b> <br> 
+* checks if booking is complete 
+* @param {object(req)}   
+* @return {boolean}
+*/
 exports.isBookingComplete = Promise.coroutine(function* (req) {
   const query = `select count(*) as count from booking where booking_id = ? and status in (?,?) `;
   const params = [req.body.booking_id, 1, 2];

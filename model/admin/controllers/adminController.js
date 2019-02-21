@@ -12,6 +12,12 @@ const jwt = require(`jsonwebtoken`);
 const config = require("config");
 const moment = require(`moment`);
 
+/** 
+* @function <b> authenticateLogin </b> <br> 
+* authenticates login of admin 
+* @param {object} req(email, password) 
+* @return void 
+*/
 exports.authenticateLogin = Promise.coroutine(function* (req, res) {
 
   const isThere = yield adminServices.findAdmin(req);
@@ -41,6 +47,12 @@ exports.authenticateLogin = Promise.coroutine(function* (req, res) {
   );
 });
 
+/** 
+* @function <b> authenticateAdmin </b> <br> 
+* authenticates admin 
+* @param {object} req(token) 
+* @return void 
+*/
 exports.authenticateAdmin = Promise.coroutine(function* (req, res, next) {
   try {
     const token = req.header(`access_token`);
@@ -58,6 +70,12 @@ exports.authenticateAdmin = Promise.coroutine(function* (req, res, next) {
   }
 });
 
+/** 
+* @function <b> assignDriver </b> <br> 
+* assigns driver to a booking 
+* @param {object} req(booking_id) 
+* @return void 
+*/
 exports.assignDriver = Promise.coroutine(function* (req, res, next) {
   try {
     const invalidBooking = yield adminServices.invalidBooking(req);
@@ -99,6 +117,12 @@ exports.assignDriver = Promise.coroutine(function* (req, res, next) {
   }
 });
 
+/** 
+* @function <b> getAllBookings </b> <br> 
+* shows all bookings in database 
+* @param {object} req(token) 
+* @return void 
+*/
 exports.getAllBookings = Promise.coroutine(function* (req, res, next) {
   try {
     const result = yield adminServices.getAllBookings(req);
@@ -108,6 +132,12 @@ exports.getAllBookings = Promise.coroutine(function* (req, res, next) {
   }
 });
 
+/** 
+* @function <b> getAllAssignedBookings </b> <br> 
+* shows all bookings that has been assigned 
+* @param {object} req(token) 
+* @return void 
+*/
 exports.getAllAssignedBookings = Promise.coroutine(function* (req, res, next) {
   try {
     const result = yield adminServices.getAllAssignedBookings(req);
@@ -117,6 +147,12 @@ exports.getAllAssignedBookings = Promise.coroutine(function* (req, res, next) {
   }
 });
 
+/** 
+* @function <b> getAllUnAssignedBookings </b> <br> 
+* shows all bookings that has not been assigned 
+* @param {object} req(token) 
+* @return void 
+*/
 exports.getAllUnAssignedBookings = Promise.coroutine(function* (req, res, next) {
   try {
     const result = yield adminServices.getAllUnAssignedBookings(req);

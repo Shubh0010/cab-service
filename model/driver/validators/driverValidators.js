@@ -42,6 +42,12 @@ function validateFare(req, res, next) {
     next();
 }
 
+/** 
+* @function <b> validate </b> <br> 
+* validates for driver model 
+* @param {number(driver_id)}   
+* @return {object(result)}
+*/
 function validate(req, res, schema) {
   const check = JOI.validate(req.body, schema, (err, data) => {
     if (err) {

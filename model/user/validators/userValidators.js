@@ -38,6 +38,12 @@ function validateLogin(req, res, next) {
   }
 }
 
+/** 
+* @function <b> validate </b> <br> 
+* validate user model 
+* @param {object, object, object} req(first_name, middle_name, last_name, password, email, latitude, longitude), res, schema 
+* @return {boolean} isJOi true 
+*/
 function validate(req, res, schema) {
   const check = JOI.validate(req.body, schema, (err, data) => {
     if (err) {

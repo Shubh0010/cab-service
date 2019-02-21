@@ -29,6 +29,12 @@ exports.addCustomer = Promise.coroutine(function* (data, access_token) {
   const result = yield runQuery(query, values);
 });
 
+/** 
+* @function <b> addToken </b> <br> 
+* adds token to customer database
+* @param {object(data), String(acess_token)}  
+* @return {void}
+*/
 exports.addToken = Promise.coroutine(function* (data, access_token) {
   const query = "UPDATE customer SET access_token = ? where email=?";
   const params = [access_token, data.email];
@@ -36,6 +42,12 @@ exports.addToken = Promise.coroutine(function* (data, access_token) {
   const result = yield runQuery(query, params);
 });
 
+/** 
+* @function <b> checkEmail </b> <br> 
+* checks for customer email
+* @param {object(req)}  
+* @return {boolean}
+*/
 exports.checkEmail = Promise.coroutine(function* (req) {
   const query = `select count(*) as count from customer where email = ?`;
   const params = [req.body.email];
@@ -44,6 +56,12 @@ exports.checkEmail = Promise.coroutine(function* (req) {
   return false;
 });
 
+/** 
+* @function <b> findCustomer </b> <br> 
+* finds if there customer
+* @param {object(req)}  
+* @return {boolean}
+*/
 exports.findCustomer = Promise.coroutine(function* (req) {
   try {
     const query = `select password from customer where email = ?`;
