@@ -27,7 +27,7 @@ const addCustomer = Promise.coroutine(function* (req, res) {
 
   try {
     const check = yield userServices.checkEmail(req);
-    if (check) return responses.authenticationError(res, { "info": "email exists" }, "Already Registered");
+    if (check) return responses.alreadyReported(res, { "info": "email exists" }, "Already Registered");
 
     else {
       const token = generateToken.token(req, "jwtPrivateKeyCustomer");
@@ -35,7 +35,7 @@ const addCustomer = Promise.coroutine(function* (req, res) {
       responses.actionCompleteResponse(res, { token: token }, "WELCOME ABROAD");
     }
   } catch (error) {
-    responses.authenticationError(res, { "error": "technical error" }, "Technical issue with database");
+    responses.notAcceptable(res, { "error": "technical error" }, "Technical issue with database");
   }
 });
 
@@ -57,7 +57,7 @@ const authenticateCustomer = Promise.coroutine(function* (req, res) {
   const isLogin = yield alreagyLogin.isLogin(req, "customer");
 
   if (isLogin)
-    return responses.actionCompleteResponse(
+    return responses.alreadyReported(
       res,
       { token: isLogin },
       "Already Login !!"
@@ -78,7 +78,7 @@ const logout = Promise.coroutine(function* (req, res) {
     responses.actionCompleteResponse(res, result, "SUCESSFULLY LOGGED OUT ")
   }
   catch (error) {
-    responses.authenticationError(res, error, "couldnt process with the request")
+    responses.notAcceptable(res, error, "couldnt process with the request")
   }
 
 })

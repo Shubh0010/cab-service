@@ -10,7 +10,7 @@ const config = require(`config`);
 exports.authenticate = Promise.coroutine(function* (req, res, next) {
   try {
     const token = req.header(`access_token`);
-    if (!token) return responses.authenticationError(res, {}, "Access Denied");
+    if (!token) return responses.notAcceptable(res, {}, "Access Denied");
 
     try {
       const decoded = jwt.verify(token, config.get(`jwtPrivateKeyCustomer`));

@@ -33,10 +33,19 @@
         ],
         "responses": {
           "200": {
-            "description": "successfully log in."
+            "description": "Action complete"
           },
           "400": {
-            "description": "Error in Log in"
+            "description": "Bad Request"
+          },
+          "208": {
+            "description": "Already logged in"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -57,10 +66,16 @@
         ],
         "responses": {
           "200": {
-            "description": "ALl Bookings Showed"
+            "description": "Action complete"
           },
           "400": {
-            "description": "Error in showing all bookings"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -81,10 +96,16 @@
         ],
         "responses": {
           "200": {
-            "description": "assigned bookings"
+            "description": "Action complete"
           },
           "400": {
-            "description": "Error in showing assigned bookings"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -105,10 +126,16 @@
         ],
         "responses": {
           "200": {
-            "description": "unassigned bookings"
+            "description": "Action complete"
           },
           "400": {
-            "description": "Error in showing unassigned bookings"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -135,10 +162,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Driver assigned"
+            "description": "Action complete"
           },
           "400": {
-            "description": "couldn`t assign driver"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "427": {
+            "description": "Not assigned"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -159,10 +195,16 @@
         ],
         "responses": {
           "200": {
-            "description": "admin successfully logged out"
+            "description": "Action complete"
           },
           "400": {
-            "description": "couldn`t log out admin"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -206,11 +248,17 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "booking created"
-          },
           "400": {
-            "description": "couldn`t create booking"
+            "description": "Bad Request"
+          },
+          "201": {
+            "description": "Sucessfully created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -231,10 +279,16 @@
         ],
         "responses": {
           "200": {
-            "description": "current booking"
+            "description": "Action complete"
           },
           "400": {
-            "description": "couldn`t load current booking"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -255,10 +309,16 @@
         ],
         "responses": {
           "200": {
-            "description": "ALL BOOKINGS"
+            "description": "Action complete"
           },
           "400": {
-            "description": "couldn`t load all bookings"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -339,10 +399,16 @@
         ],
         "responses": {
           "200": {
-            "description": "successfully signed up."
+            "description": "Action complete"
           },
           "400": {
-            "description": "Error in registering"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -369,10 +435,19 @@
         ],
         "responses": {
           "200": {
-            "description": "successfully log in."
+            "description": "Action complete"
           },
           "400": {
-            "description": "Error in login"
+            "description": "Bad Request"
+          },
+          "208": {
+            "description": "Already logged in"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -393,10 +468,16 @@
         ],
         "responses": {
           "200": {
-            "description": "CURRENT BOOKING"
+            "description": "Action complete"
           },
           "400": {
-            "description": "couldn`t load currrent booking"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -417,10 +498,16 @@
         ],
         "responses": {
           "200": {
-            "description": "ALL BOOKINGS"
+            "description": "Action complete"
           },
           "400": {
-            "description": "couldn't load all bookings"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -447,10 +534,19 @@
         ],
         "responses": {
           "200": {
-            "description": "RIDE COMPLETED"
+            "description": "Action complete"
           },
           "400": {
-            "description": "couldn`t complete the ride"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "427": {
+            "description": "Not assigned"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -471,10 +567,16 @@
         ],
         "responses": {
           "200": {
-            "description": "driver successfully logged out"
+            "description": "Action complete"
           },
           "400": {
-            "description": "couldn`t log out driver"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -543,10 +645,16 @@
         ],
         "responses": {
           "200": {
-            "description": "successfully signed up."
+            "description": "Action complete"
           },
           "400": {
-            "description": "Error in registering"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -573,10 +681,19 @@
         ],
         "responses": {
           "200": {
-            "description": "successfully logged in"
+            "description": "Action complete"
           },
           "400": {
-            "description": "Error in log in"
+            "description": "Bad Request"
+          },
+          "208": {
+            "description": "Already logged in"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }
@@ -597,10 +714,16 @@
         ],
         "responses": {
           "200": {
-            "description": "user successfully logged out"
+            "description": "Action complete"
           },
           "400": {
-            "description": "couldn`t log out user"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "406": {
+            "description": "Request not acceptable"
           }
         }
       }

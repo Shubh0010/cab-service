@@ -32,7 +32,7 @@ exports.authenticateLogin = Promise.coroutine(function* (req, res) {
   const isLogin = yield alreagyLogin.isLogin(req, "admin");
 
   if (isLogin)
-    return responses.actionCompleteResponse(
+    return responses.alreadyReported(
       res,
       { token: isLogin },
       "Already Login !!"
@@ -57,7 +57,7 @@ exports.authenticateLogin = Promise.coroutine(function* (req, res) {
 exports.authenticateAdmin = Promise.coroutine(function* (req, res, next) {
   try {
     const token = req.header(`access_token`);
-    if (!token) return responses.authenticationError(res, { "data": "please provide access token" }, "Access Denied");
+    if (!token) return responses.notAcceptable(res, { "data": "please provide access token" }, "Access Denied");
 
     try {
       const decoded = jwt.verify(token, config.get(`jwtPrivateKeyAdmin`));
@@ -81,15 +81,15 @@ exports.assignDriver = Promise.coroutine(function* (req, res, next) {
   try {
     const invalidBooking = yield adminServices.invalidBooking(req);
     if (invalidBooking)
-      return responses.actionCompleteResponse(res, { "error": "Bad Request" }, "Invalid Booking");
+      return responses.badRequest(res, { "error": "Bad Request" }, "Invalid Booking");
 
     const isComplete = yield adminServices.isBookingComplete(req);
     if (isComplete)
-      return responses.actionCompleteResponse(res, { "response": isComplete }, "Already Assigned");
+      return responses.alreadyReported(res, { "response": isComplete }, "Already Assigned");
 
     const driverId = yield adminServices.findDriver();
     if (driverId == -1)
-      return responses.actionCompleteResponse(res, { "response": "couldn't get any driver" }, "All driver are busy");
+      return responses.notAcceptable(res, { "response": "couldn't get any driver" }, "All driver are busy");
 
     const result = yield adminServices.changeDriverStatus(driverId);                          // if any driver is free assign driver to it by changing status of driver from 0 (available) to 1 (busy) 
     const data = yield adminServices.changeBookingStatus(req, driverId);                      // and booking status from 0 (pending) to 1(ongoing)
@@ -107,10 +107,9 @@ exports.assignDriver = Promise.coroutine(function* (req, res, next) {
         { $push: { logs: logData } }
       );
 
-    responses.actionCompleteResponse(res, { "driverId": driverId }, "ASSIGNED SUCCESSFULLY");
+    responses.sucessfullyCreated(res, { "driverId": driverId }, "ASSIGNED SUCCESSFULLY");
   } catch (error) {
-    console.log(error);
-    responses.authenticationError(
+    responses.badRequest(
       res,
       {},
       "Couldn`t assign your booking.... please try again Later!!!!!!!"
@@ -129,7 +128,7 @@ exports.getAllBookings = Promise.coroutine(function* (req, res, next) {
     const result = yield adminServices.getAllBookings(req);
     responses.actionCompleteResponse(res, result, "All Bookings");
   } catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings");
+    responses.notAcceptable(res, error, "Couldn`t get bookings");
   }
 });
 
@@ -144,7 +143,7 @@ exports.getAllAssignedBookings = Promise.coroutine(function* (req, res, next) {
     const result = yield adminServices.getAllAssignedBookings(req);
     responses.actionCompleteResponse(res, result, "All Assigned Bookings");
   } catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings");
+    responses.notAcceptable(res, error, "Couldn`t get bookings");
   }
 });
 
@@ -159,7 +158,7 @@ exports.getAllUnAssignedBookings = Promise.coroutine(function* (req, res, next) 
     const result = yield adminServices.getAllUnAssignedBookings(req);
     responses.actionCompleteResponse(res, result, "All Unassigned Bookings");
   } catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings");
+    responses.notAcceptable(res, error, "Couldn`t get bookings");
   }
 });
 
@@ -169,7 +168,7 @@ exports.logout = Promise.coroutine(function* (req, res) {
     responses.actionCompleteResponse(res, result, "SUCESSFULLY LOGGED OUT ")
   }
   catch(error){
-    responses.authenticationError(res , error, "couldnt process with the request")
+    responses.badRequest(res , error, "couldnt process with the request")
   }
   
 })

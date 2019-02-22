@@ -9,5 +9,4 @@ exports.isLogin = async (req, table_name) => {
 
   if (check[0].access_token == "-") return false; 
   return check[0].access_token;
-  
 };

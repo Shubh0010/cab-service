@@ -21,7 +21,7 @@ exports.createBooking = Promise.coroutine(function* (req, res) {
     const isRiding = yield bookingServices.checkBooking(req, id);                               // we won`t let him/he book if its already booked another ride
 
     if (isRiding)
-      return responses.actionCompleteResponse(
+      return responses.alreadyReported(
         res,
         { "info": `one ride to customer with customer id "${id}" is already assigned` },
         "Please complete this ride to enjoy another ride !!"
@@ -40,11 +40,10 @@ exports.createBooking = Promise.coroutine(function* (req, res) {
         logs: [logData]
       });
     }
-    return responses.actionCompleteResponse(res, { "result": booked }, "BOOKING CREATED");
+    return responses.sucessfullyCreated(res, { "result": booked }, "BOOKING CREATED");
 
   } catch (error) {
-    console.log(error);
-    responses.authenticationError(res, { "error": "technical issue" }, "Couldn`t assign booking !!");
+    responses.badRequest(res, { "error": "technical issue" }, "Couldn`t assign booking !!");
   }
 });
 
@@ -59,7 +58,7 @@ exports.getBooking = Promise.coroutine(function* (req, res) {
     const result = yield bookingServices.getBooking(req);
     responses.actionCompleteResponse(res, result, "Current Booking");
   } catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings");
+    responses.notAcceptable(res, error, "Couldn`t get bookings");
   }
 });
 
@@ -74,6 +73,6 @@ exports.getAllBookings = Promise.coroutine(function* (req, res) {
     const result = yield bookingServices.getAllBookings(req);
     responses.actionCompleteResponse(res, result, "All Bookings");
   } catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings");
+    responses.notAcceptable(res, error, "Couldn`t get bookings");
   }
 });

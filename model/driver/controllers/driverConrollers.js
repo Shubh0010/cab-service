@@ -22,7 +22,7 @@ const driverLogout = require(`../../../routes/logOut`)
 */
 const addDriver = Promise.coroutine(function* (req, res) {
   if (req.body.password != req.body.confirmPassword)
-    return responses.authenticationError(
+    return responses.notAcceptable(
       res,
       { "error": "bad request" },
       "password and confirm password doesn`t match"
@@ -30,7 +30,7 @@ const addDriver = Promise.coroutine(function* (req, res) {
 
   try {
     const check = yield driverServices.checkEmail(req);
-    if (check) return responses.authenticationError(res, { "info": "email already exist" }, "Already Registered");
+    if (check) return responses.alreadyReported(res, { "info": "email already exist" }, "Already Registered");
 
     else {
       const token = generateToken.token(req, "jwtPrivateKeyDriver");
@@ -39,7 +39,7 @@ const addDriver = Promise.coroutine(function* (req, res) {
     }
   } catch (error) {
     console.log(error);
-    responses.authenticationError(res, error, "Technical issue with database");
+    responses.notAcceptable(res, error, "Technical issue with database");
   }
 });
 
@@ -61,7 +61,7 @@ const authenticateDriver = Promise.coroutine(function* (req, res) {
 
   const isLogin = yield alreagyLogin.isLogin(req, "driver");
   if (isLogin)
-    return responses.actionCompleteResponse(
+    return responses.alreadyReported(
       res,
       { token: isLogin },
       "Already Login !!"
@@ -95,7 +95,7 @@ const authenticateToken = Promise.coroutine(function* (req, res, next) {
       responses.authenticationError(res, { "error": "bad request" }, "Invalid Token");
     }
   } catch (error) {
-    responses.authenticationError(res, { "error": "bad request" }, "Authentication Unsucessful");
+    responses.notAcceptable(res, { "error": "bad request" }, "Authentication Unsucessful");
   }
 });
 
@@ -111,11 +111,11 @@ const completeRide = Promise.coroutine(function* (req, res, next) {
 
     const noBooking = yield driverServices.noBooking(driverId);
     if (noBooking)
-      return responses.actionCompleteResponse(res, { "info": "...." }, "No Ride To complete");
+      return responses.notAssigned(res, { "info": "...." }, "No Ride To complete");
 
     const bookingId = yield driverServices.findBookingId(driverId);
     if (!bookingId)
-      responses.actionCompleteResponse(
+      responses.alreadyReported(
         res,
         { "info": "ALREADY COMPLETED" },
         "This ride is already completed"
@@ -140,7 +140,7 @@ const completeRide = Promise.coroutine(function* (req, res, next) {
 
     responses.actionCompleteResponse(res, { "success": `driver with driver id "${driverId}" completed booking "${bookingId}" sucessfully` }, "COMPLETED SUCCESSFULLY");
   } catch (error) {
-    responses.authenticationError(
+    responses.notAcceptable(
       res,
       { "error": "technical issue" },
       " couldn`t process the complete request"
@@ -159,7 +159,7 @@ const getBooking = Promise.coroutine(function* (req, res, next) {
     const result = yield driverServices.getBooking(req);
     responses.actionCompleteResponse(res, result, "Current Booking");
   } catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings");
+    responses.notAcceptable(res, error, "Couldn`t get bookings");
   }
 });
 
@@ -174,7 +174,7 @@ const getAllBookings = Promise.coroutine(function* (req, res, next) {
     const result = yield driverServices.getAllBookings(req);
     responses.actionCompleteResponse(res, result, "All Bookings");
   } catch (error) {
-    responses.authenticationError(res, error, "Couldn`t get bookings");
+    responses.notAcceptable(res, error, "Couldn`t get bookings");
   }
 });
 
@@ -184,7 +184,7 @@ const logout = Promise.coroutine(function* (req, res) {
     responses.actionCompleteResponse(res, result, "SUCESSFULLY LOGGED OUT ")
   }
   catch(error){
-    responses.authenticationError(res , error, "couldnt process with the request")
+    responses.notAcceptable(res , error, "couldnt process with the request")
   }
   
 })
