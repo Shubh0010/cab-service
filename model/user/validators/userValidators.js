@@ -47,7 +47,7 @@ function validateLogin(req, res, next) {
 function validate(req, res, schema) {
   const check = JOI.validate(req.body, schema, (err, data) => {
     if (err) {
-      responses.authenticationError(res, { "error": "please check entered values" }, err.details[0].message);
+      responses.notAcceptable(res, { "error": "please check entered values" }, err.details[0].message);
       return false;
     }
     return data;
