@@ -14,4 +14,6 @@ app.get('/admin/seeAllBookings/unassigned', adminController.authenticateAdmin, a
 app.post(`/admin/login`, adminValidator.validateLogin, adminController.authenticateLogin)
 app.post(`/admin/assignDriver`, adminValidator.validateAssignDriver, adminController.authenticateAdmin, adminController.assignDriver )
 
+app.delete('/admin/logout', adminController.authenticateAdmin, adminController.logout)
+
 require('./services/addAdmin.js')                                                               // inserts two admin in database when program starts

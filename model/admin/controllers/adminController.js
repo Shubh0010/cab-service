@@ -11,6 +11,7 @@ const generateToken = require("../../../utilities/generateToken");
 const jwt = require(`jsonwebtoken`);
 const config = require("config");
 const moment = require(`moment`);
+const adminLogout = require(`../../../routes/logOut`)
 
 /** 
 * @function <b> authenticateLogin </b> <br> 
@@ -161,3 +162,14 @@ exports.getAllUnAssignedBookings = Promise.coroutine(function* (req, res, next) 
     responses.authenticationError(res, error, "Couldn`t get bookings");
   }
 });
+
+exports.logout = Promise.coroutine(function* (req, res) {
+  try {
+    const result = yield adminLogout.logOut("admin", req.tokenEmail)
+    responses.actionCompleteResponse(res, result, "SUCESSFULLY LOGGED OUT ")
+  }
+  catch(error){
+    responses.authenticationError(res , error, "couldnt process with the request")
+  }
+  
+})

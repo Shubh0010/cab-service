@@ -11,6 +11,8 @@ const generateToken = require(`../../../utilities/generateToken`);
 const alreagyLogin = require(`../../../utilities/alreadyLogin`);
 const jwt = require(`jsonwebtoken`);
 const config = require(`config`);
+const driverLogout = require(`../../../routes/logOut`)
+
 
 /** 
 * @function <b> addDriver </b> <br> 
@@ -176,11 +178,23 @@ const getAllBookings = Promise.coroutine(function* (req, res, next) {
   }
 });
 
+const logout = Promise.coroutine(function* (req, res) {
+  try {
+    const result = yield driverLogout.logOut("driver", req.tokenEmail)
+    responses.actionCompleteResponse(res, result, "SUCESSFULLY LOGGED OUT ")
+  }
+  catch(error){
+    responses.authenticationError(res , error, "couldnt process with the request")
+  }
+  
+})
+
 module.exports = {
   addDriver,
   authenticateDriver,
   authenticateToken,
   completeRide,
   getAllBookings,
-  getBooking
+  getBooking,
+  logout
 };

@@ -29,7 +29,9 @@ function validateSignUp(req, res, next) {
 function validateLogin(req, res, next) {
   const schema = {
     password: JOI.string().required(),
-    phone_number: JOI.number().required()
+    email: JOI.string().trim().email({
+      minDomainAtoms: 2
+    }).max(30).required()
   };
   if (validate(req, res, schema))
     next();

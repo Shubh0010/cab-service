@@ -8,6 +8,8 @@ const responses = require(`../../../routes/responses`);
 const userServices = require(`../services/userServices`);
 const generateToken = require(`../../../utilities/generateToken`);
 const alreagyLogin = require(`../../../utilities/alreadyLogin`);
+const userLogout = require(`../../../routes/logOut`)
+
 
 /** 
 * @function <b> addCustomer </b> <br> 
@@ -70,4 +72,15 @@ const authenticateCustomer = Promise.coroutine(function* (req, res) {
   );
 });
 
-module.exports = { addCustomer, authenticateCustomer };
+const logout = Promise.coroutine(function* (req, res) {
+  try {
+    const result = yield userLogout.logOut("customer", req.tokenEmail)
+    responses.actionCompleteResponse(res, result, "SUCESSFULLY LOGGED OUT ")
+  }
+  catch (error) {
+    responses.authenticationError(res, error, "couldnt process with the request")
+  }
+
+})
+
+module.exports = { addCustomer, authenticateCustomer, logout };

@@ -33,7 +33,7 @@ exports.findAdmin = Promise.coroutine(function* (req) {
     const query = `select password from admin where email = ?`;
     const params = [req.body.email];
     const result = yield runQuery(query, params);
-    if ((req.body.password = result[0].password)) return true;
+    if ((req.body.password == result[0].password)) return true;
     return false;
   } catch (error) {
     return false;

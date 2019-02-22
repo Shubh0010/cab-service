@@ -143,6 +143,30 @@
         }
       }
     },
+    "/admin/logout": {
+      "delete": {
+        "tags": [
+          "admin"
+        ],
+        "description": "logout",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "token",
+            "name": "access_token",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "admin successfully logged out"
+          },
+          "400": {
+            "description": "couldn`t log out admin"
+          }
+        }
+      }
+    },
     "/booking/createBooking": {
       "post": {
         "tags": [
@@ -431,6 +455,30 @@
         }
       }
     },
+    "/driver/logout": {
+      "delete": {
+        "tags": [
+          "driver"
+        ],
+        "description": "logout",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "token",
+            "name": "access_token",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "driver successfully logged out"
+          },
+          "400": {
+            "description": "couldn`t log out driver"
+          }
+        }
+      }
+    },
     "/user/signUp": {
       "post": {
         "tags": [
@@ -529,6 +577,30 @@
           },
           "400": {
             "description": "Error in log in"
+          }
+        }
+      }
+    },
+    "/user/logout": {
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "description": "logout",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "token",
+            "name": "access_token",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user successfully logged out"
+          },
+          "400": {
+            "description": "couldn`t log out user"
           }
         }
       }

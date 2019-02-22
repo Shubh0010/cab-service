@@ -7,6 +7,7 @@ exports.isLogin = async (req, table_name) => {
   const params = [table_name, req.body.email];
   const check = await runQuery(query, params);
 
-  if (check[0].access_token) return check[0].access_token;
-  return false;
+  if (check[0].access_token == "-") return false; 
+  return check[0].access_token;
+  
 };
