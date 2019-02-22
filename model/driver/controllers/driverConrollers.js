@@ -82,7 +82,7 @@ const authenticateDriver = Promise.coroutine(function* (req, res) {
 * @param {object(req), object(res)}   
 * @return void
 */
-const authenticateToken = Promise.coroutine(function* (req, res, next) {
+const authenticateToken = function (req, res, next) {
   try {
     const token = req.header(`access_token`);
     if (!token) return responses.authenticationError(res, {}, "Access Denied"); // If the token is not there, we don`t let manipulation in database
@@ -97,7 +97,7 @@ const authenticateToken = Promise.coroutine(function* (req, res, next) {
   } catch (error) {
     responses.notAcceptable(res, { "error": "bad request" }, "Authentication Unsucessful");
   }
-});
+};
 
 /** 
 * @function <b> completeRide </b> <br> 
@@ -124,8 +124,10 @@ const completeRide = Promise.coroutine(function* (req, res, next) {
     const result = yield driverServices.changeDriverStatus(driverId);
 
     const data = yield driverServices.changeBookingStatus(req, driverId);
-    
-    const bId = parseInt(bookingId)    
+
+    yield driverServices.addFare(req, bookingId);
+
+    const bId = parseInt(bookingId)
     const date = moment().format("MMMM Do YYYY, h:mm:ss a");
     const logs = [
       `Driver with id "${driverId}" completes the booking at ${date}`
@@ -183,10 +185,10 @@ const logout = Promise.coroutine(function* (req, res) {
     const result = yield driverLogout.logOut("driver", req.tokenEmail)
     responses.actionCompleteResponse(res, result, "SUCESSFULLY LOGGED OUT ")
   }
-  catch(error){
-    responses.notAcceptable(res , error, "couldnt process with the request")
+  catch (error) {
+    responses.notAcceptable(res, error, "couldnt process with the request")
   }
-  
+
 })
 
 module.exports = {

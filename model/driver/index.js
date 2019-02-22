@@ -15,5 +15,3 @@ app.post('/driver/login',   driverValidators.validateLogin,       driverControll
 app.post('/driver/completeBooking', driverValidators.validateFare, driverControllers.authenticateToken, driverControllers.completeRide)
 
 app.delete('/driver/logout', driverControllers.authenticateToken, driverControllers.logout)
-
-

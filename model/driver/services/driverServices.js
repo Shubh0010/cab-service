@@ -143,6 +143,12 @@ exports.changeBookingStatus = Promise.coroutine(function* (req, driver_id) {
   return result;
 });
 
+exports.addFare = Promise.coroutine(function* (req, booking_id) {
+  const query = `UPDATE booking SET ride_fare = ? where booking_id = ?`
+  const values = [req.body.ride_fare, booking_id]
+  yield runQuery(query, values)
+})
+
 exports.getBooking = Promise.coroutine(function* (req) {
   const query = `SELECT driver.email, booking_id, date_time, from_latitude, from_longitude, to_latitude,to_longitude, customer.first_name as customer_name, customer.phone_number as customer_phone_number  
   FROM booking
