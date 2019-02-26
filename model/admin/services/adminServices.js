@@ -115,7 +115,8 @@ exports.getAllBookings = Promise.coroutine(function* (req) {
   LEFT JOIN driver
   USING (driver_id)
   INNER JOIN customer
-  USING (customer_id)`;
+  USING (customer_id)
+  ORDER BY (booking_id)`;
   const result = yield runQuery(query);
   return result;
 });
@@ -127,7 +128,8 @@ exports.getAllAssignedBookings = Promise.coroutine(function* (req) {
   USING (driver_id)
   INNER JOIN customer
   USING (customer_id)
-  WHERE status in(?,?)`;
+  WHERE status in(?,?)
+  ORDER BY (booking_id)`;
   const params = [1, 2];
   const result = yield runQuery(query, params);
 
@@ -139,7 +141,8 @@ exports.getAllUnAssignedBookings = Promise.coroutine(function* () {
   FROM booking
   INNER JOIN customer
   USING (customer_id)
-  WHERE status = ?`;
+  WHERE status = ?
+  ORDER BY (booking_id)`;
   const params = [0];
   const result = yield runQuery(query, params);
 

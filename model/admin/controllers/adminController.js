@@ -128,6 +128,8 @@ exports.getAllBookings = Promise.coroutine(function* (req, res, next) {
     const result = yield adminServices.getAllBookings(req);
     responses.actionCompleteResponse(res, result, "All Bookings");
   } catch (error) {
+    console.log(error);
+    
     responses.notAcceptable(res, error, "Couldn`t get bookings");
   }
 });

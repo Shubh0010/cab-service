@@ -10,8 +10,10 @@ const dbo = require(`./database/mongoLib`);
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 const Promise = require("bluebird");
+const config = require('./config/default.json')
 
 const app = express();
+const PORT = config.port;
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,6 +26,4 @@ require(`./model/driver/index.js`);
 require(`./model/booking/index.js`);
 require(`./model/admin/index.js`);
 
-app.listen(3000, () => {
-  console.log("Listening");
-});
+app.listen(PORT, () => console.log(`Listening to localhost:/`, PORT));

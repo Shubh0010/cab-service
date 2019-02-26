@@ -1,6 +1,7 @@
 {
     "jwtPrivateKeyCustomer" : "Shubham7",
     "jwtPrivateKeyDriver" : "Ashutosh7",
-    "jwtPrivateKeyAdmin" : "Manik7"
+    "jwtPrivateKeyAdmin" : "Manik7",
+    "port" : 3000
 
 }

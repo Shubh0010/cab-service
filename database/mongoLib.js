@@ -13,6 +13,5 @@ MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
   }
   else {
     global.dbo = db.db("my_jugnoo_database");
-    console.log("Connected to mongodb")
   }
 })
