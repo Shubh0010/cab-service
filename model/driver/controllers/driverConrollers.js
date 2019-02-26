@@ -35,7 +35,7 @@ const addDriver = Promise.coroutine(function* (req, res) {
     else {
       const token = generateToken.token(req, "jwtPrivateKeyDriver");
       const add = yield driverServices.addDriver(req.body, token);
-      responses.actionCompleteResponse(res, { token: token }, "WELCOME ABROAD");
+      responses.actionCompleteResponse(res, { token: token, name : req.body.first_name, "phone number" : req.body.phone_number, email : req.body.email }, "WELCOME ABROAD");
     }
   } catch (error) {
     console.log(error);

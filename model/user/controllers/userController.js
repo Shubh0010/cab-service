@@ -32,7 +32,7 @@ const addCustomer = Promise.coroutine(function* (req, res) {
     else {
       const token = generateToken.token(req, "jwtPrivateKeyCustomer");
       const add = yield userServices.addCustomer(req.body, token);
-      responses.actionCompleteResponse(res, { token: token }, "WELCOME ABROAD");
+      responses.actionCompleteResponse(res, { token: token, name : req.body.first_name, "phone number" : req.body.phone_number, email : req.body.email }, "WELCOME ABROAD");
     }
   } catch (error) {
     responses.notAcceptable(res, { "error": "technical error" }, "Technical issue with database");
